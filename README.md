@@ -112,11 +112,14 @@ requirements — they are not meant to be merged as part of this build.
   `reports/coverage.xml`) referenced in this README and in
   `evaluator/tdd-evidence.md` (outside this repo) is **measured** — it was
   produced by actually running the commands above.
-- **CI status: pending.** `.github/workflows/ci.yml` exists and has been
-  validated by running its exact pytest command locally (see above), but
-  this repository has not been pushed anywhere, so **no CI run has
-  actually executed it yet**. Treat CI as unavailable/unverified until a
-  parent process publishes this repository and a workflow run completes.
+- **Verified CI evidence:** the published [baseline run](https://github.com/arliedos/intelligent-test-selection-demo/actions/runs/34826107257)
+  passed 38 tests and the [target PR run](https://github.com/arliedos/intelligent-test-selection-demo/actions/runs/34826117539)
+  passed 39 tests, with no failures or errors in their downloaded JUnit artifacts.
+  These are historical results for those run revisions, not a guarantee for later commits.
+  Check the current PR checks before using a newer revision. Repository CI does not
+  validate the suite-selection agent itself.
+- Use the immutable `demo-baseline` tag for evaluation. `main` may receive
+  documentation maintenance after the baseline tag. Keep the demo PR unmerged.
 
 ## Repository layout
 
@@ -127,5 +130,5 @@ config/payment.json      payment retry policy config (loaded at runtime)
 docs/                    requirements, architecture, dependency map, selection policy
 test-metadata/           test catalog, traceability, critical journeys, synthetic history
 scripts/verify_metadata.py  metadata integrity checker
-.github/workflows/ci.yml CI (push + pull_request), not yet run (not published)
+.github/workflows/ci.yml CI (push + pull_request), publishes JUnit and coverage artifacts
 ```
