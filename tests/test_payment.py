@@ -1,8 +1,9 @@
 """T02 successful payment, T03 timeout/retry limit/config, T04 decline policy
-(baseline), T05 duplicate-charge mandatory.
+(target), T05 duplicate-charge mandatory.
 
-Baseline requirement (REQ-PAY-002): retry any failure (timeout or decline)
-up to payment.max_retries (default 1).
+Target requirement (REQ-PAY-002, this branch): retry ONLY timeouts, up to
+payment.max_retries (target value 2 via config/payment.json); declines are
+never retried.
 """
 import importlib.util
 import json
@@ -66,49 +67,64 @@ def test_timeout_eventually_succeeds_within_retry_budget():
     assert result.attempts == 2
 
 
-def test_baseline_decline_is_retried_up_to_max_retries():
-    """T04 (baseline) - baseline policy retries declines too."""
+def test_target_decline_is_never_retried():
+    """T04 (target) - target policy never retries a decline, even though
+    max_retries > 0 would otherwise allow it."""
     gateway = InMemoryPaymentGateway(
         scripted_outcomes={"order-5": ["decline", "success"]}
     )
-    processor = PaymentProcessor(gateway, PaymentConfig(max_retries=1))
+    processor = PaymentProcessor(
+        gateway, PaymentConfig(max_retries=2, retry_on_decline=False)
+    )
 
     result = processor.pay("order-5", amount_cents=1000)
 
+    assert result.success is False
+    assert result.attempts == 1
+    assert gateway.call_count == 1
+
+
+def test_default_loaded_config_reflects_target_policy():
+    """T03/T04 (target) - config/payment.json on this branch must actually
+    be loaded and drive behaviour: max_retries=2, decline never retried,
+    timeout still retried. This proves the config isn't decorative."""
+    config = load_payment_config()
+
+    assert config.max_retries == 2
+    assert config.retry_on_decline is False
+    assert config.retry_on_timeout is True
+
+
+def test_timeout_retried_up_to_target_max_retries_via_default_config():
+    """T03 (target) - default (file-loaded) config now allows 2 retries."""
+    gateway = InMemoryPaymentGateway(
+        scripted_outcomes={"order-7": ["timeout", "timeout", "success"]}
+    )
+    processor = PaymentProcessor(gateway)  # no explicit config: loads from file
+
+    result = processor.pay("order-7", amount_cents=1000)
+
     assert result.success is True
-    assert result.attempts == 2
-    assert gateway.call_count == 2
+    assert result.attempts == 3  # 1 initial + 2 retries
+    assert gateway.call_count == 3
+
+
+def test_decline_via_default_config_is_never_retried():
+    """T04 (target) - default (file-loaded) config never retries a decline,
+    exercised end-to-end through PaymentProcessor's own config loading."""
+    gateway = InMemoryPaymentGateway(scripted_outcomes={"order-8": ["decline"]})
+    processor = PaymentProcessor(gateway)  # no explicit config: loads from file
+
+    result = processor.pay("order-8", amount_cents=1000)
+
+    assert result.success is False
+    assert result.attempts == 1
+    assert gateway.call_count == 1
 
 
 def test_negative_max_retries_is_rejected():
     with pytest.raises(ValueError):
         PaymentConfig(max_retries=-1)
-
-
-def test_default_loaded_config_reflects_baseline_policy():
-    """T03 - config/payment.json on this branch must actually be loaded
-    and drive behaviour: max_retries=1, any failure retried. This proves
-    the config isn't decorative (also exercised end-to-end via
-    PaymentProcessor(gateway) with no explicit config below)."""
-    config = load_payment_config()
-
-    assert config.max_retries == 1
-    assert config.retry_on_timeout is True
-    assert config.retry_on_decline is True
-
-
-def test_timeout_retried_via_default_config_no_explicit_path():
-    """T03 - PaymentProcessor(gateway) with no explicit config must load
-    config/payment.json by default and retry a timeout once (max_retries=1)."""
-    gateway = InMemoryPaymentGateway(
-        scripted_outcomes={"order-9": ["timeout", "success"]}
-    )
-    processor = PaymentProcessor(gateway)  # no explicit config: loads from file
-
-    result = processor.pay("order-9", amount_cents=1000)
-
-    assert result.success is True
-    assert result.attempts == 2
 
 
 def test_load_payment_config_default_is_robust_to_install_layout(tmp_path):
