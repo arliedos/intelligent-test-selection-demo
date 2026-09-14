@@ -31,9 +31,12 @@ application**; nothing here reflects a real production system.
   `config/payment.json`, loaded by `demoshop.config.load_payment_config`).
   **Baseline** (branch `main`, tag `demo-baseline`): retry any failure —
   timeout or decline — up to `payment.max_retries` (baseline value: `1`).
-  **Target** (branch `feature/payment-retry-policy`): retry **only**
-  timeouts; declines are never retried; `payment.max_retries` raised to
-  `2`.
+  **Target** (this branch, `feature/payment-retry-policy`, **implemented
+  here**): retry **only** timeouts; declines are never retried, because
+  a decline is a definitive gateway rejection and retrying it cannot
+  change the outcome — only a timeout (an unknown/ambiguous outcome) is
+  worth a retry. `payment.max_retries` is raised to `2` on this branch's
+  `config/payment.json` to compensate for the narrower retry scope.
 
 - **REQ-PAY-004**: Idempotency. A retry using the same idempotency key as
   a prior attempt must never create a second charge, including when the

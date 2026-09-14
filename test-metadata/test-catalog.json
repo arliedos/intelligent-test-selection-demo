@@ -37,9 +37,9 @@
         "tests/test_payment.py::test_timeout_retry_respects_config_max_retries_of_zero",
         "tests/test_payment.py::test_timeout_eventually_succeeds_within_retry_budget",
         "tests/test_payment.py::test_negative_max_retries_is_rejected",
-        "tests/test_payment.py::test_default_loaded_config_reflects_baseline_policy",
-        "tests/test_payment.py::test_timeout_retried_via_default_config_no_explicit_path",
-        "tests/test_payment.py::test_load_payment_config_default_is_robust_to_install_layout"
+        "tests/test_payment.py::test_load_payment_config_default_is_robust_to_install_layout",
+        "tests/test_payment.py::test_default_loaded_config_reflects_target_policy",
+        "tests/test_payment.py::test_timeout_retried_up_to_target_max_retries_via_default_config"
       ]
     },
     {
@@ -49,7 +49,8 @@
       "requirements": ["REQ-PAY-002"],
       "mandatory": false,
       "selectors": [
-        "tests/test_payment.py::test_baseline_decline_is_retried_up_to_max_retries"
+        "tests/test_payment.py::test_target_decline_is_never_retried",
+        "tests/test_payment.py::test_decline_via_default_config_is_never_retried"
       ]
     },
     {
