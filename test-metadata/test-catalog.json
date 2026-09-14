@@ -36,7 +36,10 @@
         "tests/test_payment.py::test_timeout_is_retried_up_to_max_retries_then_fails",
         "tests/test_payment.py::test_timeout_retry_respects_config_max_retries_of_zero",
         "tests/test_payment.py::test_timeout_eventually_succeeds_within_retry_budget",
-        "tests/test_payment.py::test_negative_max_retries_is_rejected"
+        "tests/test_payment.py::test_negative_max_retries_is_rejected",
+        "tests/test_payment.py::test_default_loaded_config_reflects_baseline_policy",
+        "tests/test_payment.py::test_timeout_retried_via_default_config_no_explicit_path",
+        "tests/test_payment.py::test_load_payment_config_default_is_robust_to_install_layout"
       ]
     },
     {

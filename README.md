@@ -24,19 +24,21 @@ See `docs/architecture.md` for the module map and dependency graph, and
 
 ## Requirements
 
-- Python 3.11+ (native Windows path example below uses `python`; on this
-  machine `python3` is not available — use `python`).
+- Python 3.11+ (on Windows use `python`; `python3` may not exist).
 - Git Bash / PowerShell.
 
 ## Setup
 
-From `C:/Users/arlie/qe-sandbox/intelligent-test-selection-demo`:
+Clone the repository, then from its root:
 
 ```
 python -m venv .venv
 .venv/Scripts/python -m pip install --upgrade pip
 .venv/Scripts/python -m pip install -e ".[dev]"
 ```
+
+All commands below invoke `.venv/Scripts/python` explicitly rather than
+relying on an activated environment or a global Python install.
 
 ## Running tests
 
@@ -110,11 +112,11 @@ requirements — they are not meant to be merged as part of this build.
   `reports/coverage.xml`) referenced in this README and in
   `evaluator/tdd-evidence.md` (outside this repo) is **measured** — it was
   produced by actually running the commands above.
-- `.github/workflows/ci.yml` exists and has been validated by running its
-  exact pytest command locally, but this repository has not been pushed
-  anywhere, so **no CI run has actually executed it yet**. Treat CI as
-  unavailable/unverified until a parent process publishes this repository
-  and a workflow run completes.
+- **CI status: pending.** `.github/workflows/ci.yml` exists and has been
+  validated by running its exact pytest command locally (see above), but
+  this repository has not been pushed anywhere, so **no CI run has
+  actually executed it yet**. Treat CI as unavailable/unverified until a
+  parent process publishes this repository and a workflow run completes.
 
 ## Repository layout
 

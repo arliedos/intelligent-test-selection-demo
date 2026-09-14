@@ -9,8 +9,31 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PAYMENT_CONFIG_PATH = _REPO_ROOT / "config" / "payment.json"
+_MODULE_DIR = Path(__file__).resolve().parent
+
+
+def _find_default_config_path(start: Path, max_levels: int = 6) -> Path:
+    """Searches upward from `start` for a `config/payment.json`.
+
+    Deliberately does not hardcode a fixed number of parent directories
+    between this module and the repo root: that breaks whenever the
+    module isn't installed exactly two levels below the repo root (e.g.
+    a non-editable install, where site-packages/demoshop/config.py sits
+    next to, not two levels below, its config directory).
+    """
+    current = start
+    for _ in range(max_levels + 1):
+        candidate = current / "config" / "payment.json"
+        if candidate.exists():
+            return candidate
+        parent = current.parent
+        if parent == current:
+            break
+        current = parent
+    raise FileNotFoundError(
+        f"could not locate config/payment.json searching upward from {start} "
+        f"(searched {max_levels + 1} directory levels)"
+    )
 
 
 @dataclass(frozen=True)
@@ -25,7 +48,7 @@ class PaymentConfig:
 
 
 def load_payment_config(path: Optional[Path] = None) -> PaymentConfig:
-    config_path = Path(path) if path is not None else DEFAULT_PAYMENT_CONFIG_PATH
+    config_path = Path(path) if path is not None else _find_default_config_path(_MODULE_DIR)
     with open(config_path, "r", encoding="utf-8") as fh:
         raw = json.load(fh)
     return PaymentConfig(
