@@ -1,0 +1,21 @@
+{
+  "description": "Critical user journeys and mandatory/protected test IDs for DemoShop. Protected test IDs must always be included in any selected regression subset, regardless of diff scope (see docs/test-selection-policy.md).",
+  "journeys": [
+    {
+      "id": "CJ01",
+      "name": "Authenticated checkout critical path",
+      "description": "login -> catalogue search -> checkout -> payments -> gateway charge",
+      "component_chain": [
+        "demoshop.auth",
+        "demoshop.catalogue",
+        "demoshop.checkout",
+        "demoshop.payments",
+        "demoshop.gateway"
+      ],
+      "primary_test_id": "T10",
+      "protected_test_ids": ["T01", "T05", "T10"]
+    }
+  ],
+  "protected_test_ids": ["T01", "T05", "T10"],
+  "notes": "T01 (login mandatory), T05 (duplicate-charge prevention), and T10 (end-to-end critical journey) must never be excluded by a selection agent, independent of which files a change touches."
+}

@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "disclaimer": "FABRICATED example metadata, created only to give a regression-suite-selection agent a historical-flakiness signal to reason about. Nothing in this file was measured from a real test run. Do not treat any field here as an observed result. For real, measured results, see /README.md's 'run tests' output and evaluator/tdd-evidence.md (outside this repository).",
+  "history": [
+    {
+      "test_id": "T05",
+      "selector": "tests/test_payment.py::test_duplicate_charge_prevented_after_timeout_following_recorded_charge",
+      "synthetic_flake_rate_pct": 4.0,
+      "synthetic_last_10_runs": ["pass", "pass", "fail", "pass", "pass", "pass", "fail", "pass", "pass", "pass"],
+      "note": "Illustrative only. T05 is deterministic in this repository (no randomness in the in-memory gateway) and is additionally protected/mandatory regardless of any flakiness signal."
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "description": "Test catalog for DemoShop. 'primary_tests' holds exactly the ten mandated catalog IDs (T01-T10); 'additional_tests' holds extra validation tests (e.g. metadata self-checks) that are allowed but are not part of the primary ten. Every pytest-collected test across BOTH sections must appear in exactly one selector entry, with no duplicates or omissions (verified by scripts/verify_metadata.py).",
+  "primary_tests": [
+    {
+      "id": "T01",
+      "title": "Login mandatory",
+      "component": "demoshop.auth",
+      "requirements": ["REQ-AUTH-001"],
+      "mandatory": true,
+      "selectors": [
+        "tests/test_auth.py::test_login_with_valid_credentials_returns_session",
+        "tests/test_auth.py::test_login_with_invalid_password_raises_auth_error",
+        "tests/test_auth.py::test_login_with_unknown_user_raises_auth_error",
+        "tests/test_auth.py::test_checkout_requires_authenticated_session",
+        "tests/test_auth.py::test_checkout_accepts_authenticated_session",
+        "tests/test_checkout.py::test_checkout_rejects_unauthenticated_session"
+      ]
+    },
+    {
+      "id": "T02",
+      "title": "Successful payment",
+      "component": "demoshop.payments",
+      "requirements": ["REQ-PAY-001"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_payment.py::test_successful_payment_charges_once"
+      ]
+    },
+    {
+      "id": "T03",
+      "title": "Timeout retry limit and config",
+      "component": "demoshop.payments",
+      "requirements": ["REQ-PAY-002", "REQ-PAY-005"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_payment.py::test_timeout_is_retried_up_to_max_retries_then_fails",
+        "tests/test_payment.py::test_timeout_retry_respects_config_max_retries_of_zero",
+        "tests/test_payment.py::test_timeout_eventually_succeeds_within_retry_budget",
+        "tests/test_payment.py::test_negative_max_retries_is_rejected"
+      ]
+    },
+    {
+      "id": "T04",
+      "title": "Decline policy (baseline allows retry, target forbids)",
+      "component": "demoshop.payments",
+      "requirements": ["REQ-PAY-002"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_payment.py::test_baseline_decline_is_retried_up_to_max_retries"
+      ]
+    },
+    {
+      "id": "T05",
+      "title": "Duplicate-charge prevention (mandatory)",
+      "component": "demoshop.payments",
+      "requirements": ["REQ-PAY-004"],
+      "mandatory": true,
+      "selectors": [
+        "tests/test_payment.py::test_duplicate_charge_prevented_after_timeout_following_recorded_charge"
+      ]
+    },
+    {
+      "id": "T06",
+      "title": "Checkout result",
+      "component": "demoshop.checkout",
+      "requirements": ["REQ-CHECKOUT-001"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_checkout.py::test_checkout_result_success_reports_order_id_and_total",
+        "tests/test_checkout.py::test_checkout_result_failed_when_payment_exhausts_retries"
+      ]
+    },
+    {
+      "id": "T07",
+      "title": "Catalogue search",
+      "component": "demoshop.catalogue",
+      "requirements": ["REQ-CATALOGUE-001"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_catalogue.py::test_search_matches_case_insensitive_substring",
+        "tests/test_catalogue.py::test_search_returns_empty_list_for_no_match",
+        "tests/test_catalogue.py::test_search_empty_query_returns_all_products"
+      ]
+    },
+    {
+      "id": "T08",
+      "title": "Profile edit",
+      "component": "demoshop.profile",
+      "requirements": ["REQ-PROFILE-001"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_profile.py::test_update_profile_changes_email",
+        "tests/test_profile.py::test_update_profile_rejects_invalid_email",
+        "tests/test_profile.py::test_update_unknown_profile_raises"
+      ]
+    },
+    {
+      "id": "T09",
+      "title": "Gateway timeout contract",
+      "component": "demoshop.gateway",
+      "requirements": ["REQ-GATEWAY-001"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_gateway.py::test_charge_success_returns_recorded_charge",
+        "tests/test_gateway.py::test_charge_timeout_raises_gateway_timeout_error",
+        "tests/test_gateway.py::test_charge_decline_raises_decline_error",
+        "tests/test_gateway.py::test_timeout_after_charge_still_records_exactly_one_charge",
+        "tests/test_gateway.py::test_repeat_charge_with_same_idempotency_key_does_not_duplicate"
+      ]
+    },
+    {
+      "id": "T10",
+      "title": "Checkout critical journey (mandatory)",
+      "component": "demoshop.checkout",
+      "requirements": ["REQ-CHECKOUT-002"],
+      "mandatory": true,
+      "selectors": [
+        "tests/test_checkout.py::test_critical_journey_login_search_checkout_pay_gateway"
+      ]
+    }
+  ],
+  "additional_tests": [
+    {
+      "id": "A01",
+      "title": "Metadata integrity self-check",
+      "component": "scripts.verify_metadata",
+      "requirements": ["REQ-META-001"],
+      "mandatory": false,
+      "selectors": [
+        "tests/test_metadata_integrity.py::test_catalog_selectors_match_real_pytest_collection",
+        "tests/test_metadata_integrity.py::test_detects_selector_missing_from_catalog",
+        "tests/test_metadata_integrity.py::test_detects_selector_missing_from_collection",
+        "tests/test_metadata_integrity.py::test_detects_duplicate_selector_in_catalog",
+        "tests/test_metadata_integrity.py::test_traceability_requirement_refs_exist_in_requirements_doc",
+        "tests/test_metadata_integrity.py::test_detects_unknown_requirement_ref",
+        "tests/test_metadata_integrity.py::test_critical_journey_test_ids_exist_in_catalog",
+        "tests/test_metadata_integrity.py::test_run_all_checks_passes_on_real_repo"
+      ]
+    }
+  ]
+}

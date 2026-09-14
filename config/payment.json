@@ -1,0 +1,6 @@
+{
+  "_comment": "Baseline payment retry policy (REQ-PAY-002). Loaded at runtime by demoshop.config.load_payment_config().",
+  "max_retries": 1,
+  "retry_on_timeout": true,
+  "retry_on_decline": true
+}

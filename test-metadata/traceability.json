@@ -1,0 +1,16 @@
+{
+  "description": "Requirement -> test-ID traceability for DemoShop. Every requirement ID here must exist in docs/requirements.md (verified by scripts/verify_metadata.py).",
+  "requirements": {
+    "REQ-AUTH-001": { "component": "demoshop.auth", "tests": ["T01"] },
+    "REQ-CATALOGUE-001": { "component": "demoshop.catalogue", "tests": ["T07"] },
+    "REQ-PROFILE-001": { "component": "demoshop.profile", "tests": ["T08"] },
+    "REQ-PAY-001": { "component": "demoshop.payments", "tests": ["T02"] },
+    "REQ-PAY-002": { "component": "demoshop.payments", "tests": ["T03", "T04"] },
+    "REQ-PAY-004": { "component": "demoshop.payments", "tests": ["T05"] },
+    "REQ-PAY-005": { "component": "demoshop.payments", "tests": ["T03"] },
+    "REQ-GATEWAY-001": { "component": "demoshop.gateway", "tests": ["T09"] },
+    "REQ-CHECKOUT-001": { "component": "demoshop.checkout", "tests": ["T06"] },
+    "REQ-CHECKOUT-002": { "component": "demoshop.checkout", "tests": ["T10"] },
+    "REQ-META-001": { "component": "scripts.verify_metadata", "tests": ["A01"] }
+  }
+}

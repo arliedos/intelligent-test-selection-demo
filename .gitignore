@@ -1,0 +1,29 @@
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# Virtual environment
+.venv/
+venv/
+
+# Test/coverage reports (generated locally, see README.md)
+reports/
+htmlcov/
+.coverage
+coverage.xml
+junit.xml
+
+# Tooling / assistant directories that must never be committed
+.claude/
+
+# Evaluator-only materials (answer key etc.) must stay outside this repo
+evaluator/
+
+# Secrets
+.env
+*.pem
+*.key
+secrets/

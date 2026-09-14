@@ -1,0 +1,34 @@
+{
+  "description": "Directed module dependency graph for DemoShop. Edges mean 'depends on' (caller -> callee).",
+  "nodes": [
+    "demoshop.auth",
+    "demoshop.catalogue",
+    "demoshop.profile",
+    "demoshop.checkout",
+    "demoshop.payments",
+    "demoshop.gateway",
+    "demoshop.config"
+  ],
+  "edges": [
+    { "from": "demoshop.checkout", "to": "demoshop.auth" },
+    { "from": "demoshop.checkout", "to": "demoshop.payments" },
+    { "from": "demoshop.payments", "to": "demoshop.gateway" },
+    { "from": "demoshop.payments", "to": "demoshop.config" }
+  ],
+  "independent_components": [
+    "demoshop.catalogue",
+    "demoshop.profile"
+  ],
+  "critical_chain": [
+    "demoshop.checkout",
+    "demoshop.payments",
+    "demoshop.gateway"
+  ],
+  "config_files": [
+    {
+      "path": "config/payment.json",
+      "loaded_by": "demoshop.config.load_payment_config",
+      "affects": ["demoshop.payments", "demoshop.checkout"]
+    }
+  ]
+}
