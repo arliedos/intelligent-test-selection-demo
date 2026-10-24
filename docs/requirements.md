@@ -14,7 +14,8 @@ application**; nothing here reflects a real production system.
 
 - **REQ-CATALOGUE-001**: Catalogue search returns products whose name
   contains the (case-insensitive) query substring; an empty query returns
-  the full catalogue; no match returns an empty list.
+  the full catalogue; no match returns an empty list. Results are
+  returned in catalogue order (wording clarification only; behaviour unchanged).
 
 ## Profile (independent of checkout -> payments -> gateway)
 
