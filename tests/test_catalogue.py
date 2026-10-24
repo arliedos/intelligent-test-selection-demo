@@ -26,3 +26,12 @@ def test_search_empty_query_returns_all_products():
     results = catalogue.search("")
 
     assert len(results) == len(catalogue.list_all())
+
+
+def test_search_is_case_insensitive_for_uppercase_query():
+    catalogue = InMemoryCatalogue()
+
+    results = catalogue.search("WID")
+
+    names = {item.name for item in results}
+    assert "Blue Widget" in names
